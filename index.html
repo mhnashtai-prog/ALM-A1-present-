@@ -50,9 +50,11 @@ input{flex:1;min-width:140px;font:inherit;font-size:1.1rem;padding:11px;border:2
 .fam b{display:block;font-size:1.5rem}
 #shelf{margin-top:12px;font-size:.9rem;color:var(--mut)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1d2033;color:#fff;padding:10px 18px;border-radius:99px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:9}
+.tq{padding:12px 0;border-top:1px solid var(--line)}.ts{font-size:1.05rem;font-weight:600;margin-bottom:8px}.to{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.tp{font:inherit;font-size:.9rem;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 4px;cursor:pointer}.tp.sel{border-color:var(--acc);background:var(--accs)}.tp.ok{background:var(--oks);border-color:var(--ok)}.tp.bad{background:var(--bads);border-color:var(--bad)}@media(max-width:520px){.to{grid-template-columns:1fr 1fr}}
 </style></head><body>
 <header>
 <div class="top"><h1>🏡 The Johnsons’ Verb Lab</h1><div class="stats"><span id="sc">⭐ 0</span><span id="st">🔥 0</span><span id="lv">Lv 1</span></div></div>
+<div class="modes" id="views" style="margin-top:8px"><button class="on" data-v="p">🎮 Practice</button><button data-v="t">📝 Test page (A1)</button></div>
 <div class="modes" id="modes"></div>
 <div class="xp"><i id="xp"></i></div>
 </header>
@@ -60,6 +62,7 @@ input{flex:1;min-width:140px;font:inherit;font-size:1.1rem;padding:11px;border:2
 <div class="topics" id="topics"></div>
 <div class="prog"><i id="pg"></i></div>
 <div class="card" id="stage"></div>
+<div id="test" style="display:none"></div>
 <div class="fam"><div><b>👨</b>Tom<br>Dad</div><div><b>👩</b>Sarah<br>Mum</div><div><b>👧</b>Emma<br>16</div><div><b>👦</b>Jake<br>10</div><div><b>🐶</b>Max<br>the dog</div></div>
 <p class="mut">Remember: <b>he / she / it</b> + verb‑s (wakes, goes, studies, has). <b>I / you / we / they</b> + base verb.</p>
 <div id="shelf">🎖️ Badges: none yet</div>
@@ -151,5 +154,21 @@ $("#modes").innerHTML=Object.entries(MODES).map(([k,v])=>`<button data-m="${k}" 
 $("#topics").innerHTML=Object.entries(TOP).map(([k,v])=>`<button data-t="${k}" class="${k===S.topic?"on":""}">${v}</button>`).join("");
 $$("#modes button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;$$("#modes button").forEach(x=>x.classList.toggle("on",x===b));start()});
 $$("#topics button").forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;$$("#topics button").forEach(x=>x.classList.toggle("on",x===b));start()});
+const TQ=["Tom ___ a teacher.|am|are|is|be|2|Verbs","Sarah and Tom ___ at the hospital.|is|am|be|are|3|Verbs","Jake gets up ___ 7:00.|in|on|to|at|3|Prepositions","The Johnsons have lunch ___ Sunday.|on|in|at|to|0|Prepositions","Emma likes tea ___ she doesn’t like coffee.|and|because|but|so|2|Linking words","Jake goes to bed early ___ he is tired.|but|or|then|because|3|Linking words","Sarah ___ breakfast at 7:30.|makes|make|making|is make|0|Verbs","Jake is ten years old. He ___ eleven.|doesn’t|don’t|isn’t|not|2|Verbs","___ Emma like pizza?|Do|Is|Are|Does|3|Verbs","Tom doesn’t ___ coffee.|drinks|drinking|drink|drank|2|Verbs","Emma goes ___ school by bus.|in|to|at|on|1|Prepositions","This is ___ apple.|a|any|an|many|2|Articles","Emma has ___ brother. His name is Jake.|an|some|any|a|3|Articles","She doesn’t have ___ free time on Mondays.|any|some|a|many|0|Quantifiers","___ is Max? He’s in the garden.|Who|Where|When|What|1|Question words","Emma and Jake walk to school ___ their friends.|at|in|with|on|2|Prepositions","Tom drives ___ car to work.|he|him|her|his|3|Pronouns","Sarah cooks dinner, ___ the family eats together.|but|because|or|and|3|Linking words","Do you want tea ___ coffee?|and|or|but|so|1|Linking words","How ___ children do the Johnsons have?|much|many|any|some|1|Quantifiers"].map(l=>{const a=l.split("|");return{s:a[0],o:a.slice(1,5),c:+a[5],g:a[6]}});
+let TA=[],TD=false;
+function drawTest(){
+ const n=TA.filter(x=>x!=null).length;let foot;
+ if(!TD)foot=`<div class="row"><button class="btn" id="sub">Check my answers</button><span class="mut" style="align-self:center">Answered ${n} / ${TQ.length}</span></div>`;
+ else{const ok=TQ.filter((q,i)=>TA[i]===q.c).length,st=ok>=18?3:ok>=14?2:ok>=10?1:0,cat={};
+  TQ.forEach((q,i)=>{cat[q.g]=cat[q.g]||[0,0];cat[q.g][1]++;if(TA[i]===q.c)cat[q.g][0]++});
+  foot=`<div class="sum" id="res"><div class="stars">${"⭐".repeat(st)||"💪"}</div><h2>${ok} / ${TQ.length}</h2><p class="mut">+${ok*5} points added to your score!</p><p>${Object.entries(cat).map(([k,v])=>`<b>${k}</b>: ${v[0]}/${v[1]}`).join(" · ")}</p><button class="btn" id="retry">Try again</button></div>`}
+ $("#test").innerHTML=`<div class="card"><h2 style="margin:0 0 4px">Test 1 · A1 Use of English</h2><p class="mut">For questions 1–20, choose the word or phrase (A, B, C or D) which best completes each sentence.</p>`+TQ.map((q,i)=>`<div class="tq"><div class="ts"><b>${i+1}</b> ${q.s.replace("___",`<span class="gap">${TD?q.o[q.c]:"______"}</span>`)} <small class="mut">· ${q.g}</small></div><div class="to">${q.o.map((x,j)=>`<button class="tp ${TA[i]===j?"sel":""} ${TD?(j===q.c?"ok":TA[i]===j?"bad":""):""}" data-q="${i}" data-j="${j}" ${TD?"disabled":""}>${"ABCD"[j]}  ${x}</button>`).join("")}</div></div>`).join("")+foot+`</div>`}
+$("#test").onclick=e=>{const b=e.target.closest(".tp");
+ if(b&&!TD){TA[+b.dataset.q]=+b.dataset.j;drawTest();return}
+ if(e.target.id==="sub"){TD=true;const ok=TQ.filter((q,i)=>TA[i]===q.c).length;S.score+=ok*5;if(ok===TQ.length)unlock("perfect");if(S.score>=100)unlock("c100");stats();drawTest();$("#res").scrollIntoView({behavior:"smooth"})}
+ if(e.target.id==="retry"){TA=[];TD=false;drawTest();window.scrollTo({top:0,behavior:"smooth"})}};
+$$("#views button").forEach(b=>b.onclick=()=>{const t=b.dataset.v==="t";$$("#views button").forEach(x=>x.classList.toggle("on",x===b));
+ ;["#modes",".topics",".prog","#stage",".fam"].forEach(s=>$(s).style.display=t?"none":"");
+ $("#test").style.display=t?"":"none";if(t){TA=[];TD=false;drawTest()}});
 start();
 </script></body></html>
