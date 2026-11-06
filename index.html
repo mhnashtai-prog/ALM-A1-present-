@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Johnsons’ Verb Lab</title>
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--ink:#1d2033;--mut:#667085;--line:#dfe2ee;--acc:#4f46e5;--accs:#e8e7fd;--ok:#16a34a;--oks:#dcfce7;--bad:#dc2626;--bads:#fee2e2;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141f;--card:#1c1f30;--ink:#eef0fa;--mut:#9aa3bd;--line:#31354d;--accs:#2b2a5c;--oks:#12351f;--bads:#3d1717;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12141f;--card:#1c1f30;--ink:#eef0fa;--mut:#9aa3bd;--line:#31354d;--accs:#2b2a5c;--oks:#12351f;--bads:#3d1717;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:12px 14px 10px}
+.top{max-width:760px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:1.15rem;margin:0}
+.stats{display:flex;gap:8px;font-weight:700;font-size:.9rem}
+.stats span{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:99px}
+.modes{max-width:760px;margin:10px auto 0;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.modes button{flex:0 0 auto;border:0;border-radius:99px;padding:8px 14px;font:inherit;font-weight:600;font-size:.9rem;background:rgba(255,255,255,.18);color:#fff;cursor:pointer}
+.modes button.on{background:#fff;color:#4f46e5}
+.xp{max-width:760px;margin:8px auto 0;height:6px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden}
+.xp i{display:block;height:100%;background:#fcd34d;width:0;transition:width .4s}
+.wrap{max-width:760px;margin:auto;padding:12px}
+.topics{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px}
+.topics button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.topics button.on{background:var(--accs);border-color:var(--acc);color:var(--acc);font-weight:700}
+.prog{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:10px}
+.prog i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;min-height:280px}
+.qh{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.em{font-size:2rem}.tag{font-size:.8rem;font-weight:700;color:var(--acc);background:var(--accs);padding:3px 10px;border-radius:99px}
+.sent{font-size:1.3rem;font-weight:600;margin:6px 0 16px}
+.gap{display:inline-block;min-width:60px;border-bottom:3px solid var(--acc);text-align:center;color:var(--acc)}
+.big{font-size:1.5rem;color:var(--acc)}
+.mut{color:var(--mut);font-size:.9rem}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opts.b3{grid-template-columns:repeat(3,1fr)}
+.opt,.chip,.btn{font:inherit;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px;cursor:pointer;font-weight:600}
+.opt:hover:not(:disabled),.chip:hover:not(:disabled){border-color:var(--acc)}
+.opt.ok,.chip.ok{background:var(--oks);border-color:var(--ok)}.opt.bad,.chip.bad{background:var(--bads);border-color:var(--bad)}
+.btn{background:var(--acc);border-color:var(--acc);color:#fff;padding:10px 20px}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+input{flex:1;min-width:140px;font:inherit;font-size:1.1rem;padding:11px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.line{min-height:56px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.bank{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:8px 12px}
+.msg{margin-top:14px;padding:10px 12px;border-radius:12px;background:var(--accs)}.msg.ok{background:var(--oks)}.msg.bad{background:var(--bads)}
+#fb .btn{margin-top:10px}
+.sum{text-align:center;padding:20px 0}.stars{font-size:3rem}
+.fam{display:flex;gap:8px;overflow-x:auto;margin-top:14px}
+.fam div{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center;font-size:.8rem}
+.fam b{display:block;font-size:1.5rem}
+#shelf{margin-top:12px;font-size:.9rem;color:var(--mut)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1d2033;color:#fff;padding:10px 18px;border-radius:99px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:9}
+</style></head><body>
+<header>
+<div class="top"><h1>🏡 The Johnsons’ Verb Lab</h1><div class="stats"><span id="sc">⭐ 0</span><span id="st">🔥 0</span><span id="lv">Lv 1</span></div></div>
+<div class="modes" id="modes"></div>
+<div class="xp"><i id="xp"></i></div>
+</header>
+<div class="wrap">
+<div class="topics" id="topics"></div>
+<div class="prog"><i id="pg"></i></div>
+<div class="card" id="stage"></div>
+<div class="fam"><div><b>👨</b>Tom<br>Dad</div><div><b>👩</b>Sarah<br>Mum</div><div><b>👧</b>Emma<br>16</div><div><b>👦</b>Jake<br>10</div><div><b>🐶</b>Max<br>the dog</div></div>
+<p class="mut">Remember: <b>he / she / it</b> + verb‑s (wakes, goes, studies, has). <b>I / you / we / they</b> + base verb.</p>
+<div id="shelf">🎖️ Badges: none yet</div>
+</div>
+<script>
+const RAW={
+m:["Tom|wake|wakes|up at 6:30","Sarah|get|gets|up at 7:00","Emma|brush|brushes|her teeth","Jake|take|takes|a quick shower","Sarah|make|makes|breakfast for everyone","The Johnsons|have|have|breakfast together","Jake|eat|eats|cereal with milk","Emma|wash|washes|her face","Tom|drive|drives|the kids to school","Emma and Jake|leave|leave|home at 7:45","Max|bark|barks|at the postman","Sarah|go|goes|to work at 8:30"],
+a:["Tom|start|starts|work at 9:00","Sarah|work|works|at a bank","Emma|study|studies|maths at school","Jake|play|plays|football at lunchtime","Emma and Jake|eat|eat|lunch in the canteen","Tom|answer|answers|emails all afternoon","Jake|finish|finishes|school at 3:30","Emma|catch|catches|the bus home","Max|sleep|sleeps|in the garden"],
+e:["Sarah|cook|cooks|dinner at 7:00","Tom|watch|watches|the news","The Johnsons|sit|sit|at the table together","Jake|do|does|his homework","Emma|help|helps|her mum in the kitchen","Tom and Sarah|talk|talk|about their day","Jake|play|plays|video games for an hour","Emma|text|texts|her friends","Tom|walk|walks|Max in the park"],
+n:["Jake|go|goes|to bed at 9:00","Emma|read|reads|a book before bed","Sarah|lock|locks|the front door","Tom|turn|turns|off the lights","Emma|listen|listens|to music","The Johnsons|sleep|sleep|well","Tom and Sarah|go|go|to bed at 11:00","Max|snore|snores|loudly"],
+w:["Tom|play|plays|tennis on Saturdays","Sarah|go|goes|to the gym on Mondays","Emma|have|has|a piano lesson on Tuesdays","Jake|train|trains|with his team on Wednesdays","The Johnsons|go|go|shopping every Saturday","Emma and Jake|visit|visit|their grandparents on Sundays","Tom|wash|washes|the car every Sunday","Sarah|clean|cleans|the house on Fridays","The Johnsons|watch|watch|a film on Friday nights","Jake|take|takes|out the rubbish on Thursdays","Emma|babysit|babysits|for a neighbour on Saturdays","Tom|cook|cooks|a barbecue every Sunday","Max|chase|chases|squirrels every weekend","Tom and Sarah|go|go|out for dinner on Saturdays","Sarah|call|calls|her mother every Sunday"],
+o:["Sarah|pay|pays|the bills once a month","Tom|check|checks|the car oil once a month","The Johnsons|eat|eat|at a restaurant once a month","Emma|get|gets|her pocket money on the first day of the month","Jake|have|has|a haircut every month","Tom|fly|flies|to Manchester twice a month","Sarah|try|tries|a new recipe once a month","Emma and Jake|clean|clean|their bedrooms on the last Sunday of the month","The Johnsons|visit|visit|the beach on the first weekend of the month","Max|go|goes|to the dog groomer once a month","Tom|buy|buys|flowers for Sarah every month","Jake|carry|carries|the shopping bags once a month","Emma|worry|worries|about her exams at the end of the month"]};
+const TOP={all:"🏠 All",m:"🌅 Morning",a:"☀️ Afternoon",e:"🌆 Evening",n:"🌙 Night",w:"📅 Weekly",o:"🗓️ Monthly"};
+const MODES={mc:"Multiple choice",gap:"Gap‑fill",sort:"Sorting",ord:"Ordering",mis:"Find the mistakes"};
+const TIT=["Visitor","Guest","Friend","Housemate","Family member","Verb master"];
+const BD={first:["🌱","First step"],s5:["🔥","5 in a row"],s10:["⚡","10 in a row"],c100:["💯","100 points"],perfect:["🏆","Perfect round"]};
+const SPN=["add ‑s","add ‑es","change ‑y to ‑ies","irregular"];
+const EM={Tom:"👨",Sarah:"👩",Emma:"👧",Jake:"👦",Max:"🐶"};
+const ITEMS=[];for(const k in RAW)RAW[k].forEach(l=>{const[p,b,t,r]=l.split("|");const pl=/ and |Johnsons/.test(p);ITEMS.push({k,p,b,t,r,pl,f:pl?b:t})});
+const S={mode:"mc",topic:"all",q:[],i:0,ok:0,score:0,streak:0,best:0,locked:false,round:0,sortType:"rt",bd:new Set()};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sp=q=>q.t==="has"?3:q.t===q.b.slice(0,-1)+"ies"?2:q.t===q.b+"es"?1:0;
+const emo=q=>q.pl?(q.p.startsWith("The")?"👨‍👩‍👧‍👦":"👫"):EM[q.p];
+const sent=(q,v)=>q.p+" "+v+" "+q.r+".";
+const rule=q=>q.pl?`“${q.p}” = they → base verb: <b>${q.b}</b>.`:`“${q.p}” = he/she/it → <b>${q.t}</b> (${SPN[sp(q)]}).`;
+const tname=q=>q.k==="w"?"Weekly routine":q.k==="o"?"Monthly routine":"Daily routine · "+TOP[q.k].slice(3);
+
+function frame(q,title,body){$("#stage").innerHTML=`<div class="qh"><span class="em">${emo(q)}</span><span class="tag">${title}</span><span class="mut">${tname(q)}</span></div>${body}<div id="fb"></div>`}
+function stats(){const lv=Math.floor(S.score/100);$("#sc").textContent="⭐ "+S.score;$("#st").textContent="🔥 "+S.streak;$("#lv").textContent="Lv "+(lv+1)+" · "+TIT[Math.min(lv,5)];$("#xp").style.width=(S.score%100)+"%";$("#pg").style.width=(S.i/S.q.length*100)+"%"}
+function unlock(k){if(S.bd.has(k))return;S.bd.add(k);const t=document.createElement("div");t.className="toast";t.textContent=BD[k][0]+" Badge: "+BD[k][1];document.body.appendChild(t);setTimeout(()=>t.remove(),2400);$("#shelf").innerHTML="🎖️ Badges: "+[...S.bd].map(x=>BD[x][0]+" "+BD[x][1]).join(" · ")}
+function answer(good,msg,mult=1){
+ if(S.locked)return;S.locked=true;let pts=0;
+ if(good){S.streak++;S.ok++;pts=Math.round((10+Math.min(S.streak,5)*2)*mult);S.score+=pts;S.best=Math.max(S.best,S.streak)}else S.streak=0;
+ const last=S.i===S.q.length-1;
+ $("#fb").innerHTML=`<div class="msg ${good?"ok":"bad"}">${good?"✅ Correct! +"+pts+(S.streak>2?" 🔥":""):"❌ Not quite."} ${msg}</div><button class="btn" id="next">${last?"See results":"Next →"}</button>`;
+ $("#next").onclick=()=>{S.i++;render()};
+ if(S.ok>=1)unlock("first");if(S.streak>=5)unlock("s5");if(S.streak>=10)unlock("s10");if(S.score>=100)unlock("c100");
+ stats()}
+
+function mc(q){
+ const o=shuf([q.f,...(q.pl?[q.t,"does "+q.b,"is "+q.b]:[q.b,"do "+q.b,"is "+q.b])]);
+ frame(q,"Choose the correct verb",`<p class="sent">${q.p} <span class="gap">___</span> ${q.r}.</p><div class="opts">${o.map(x=>`<button class="opt" data-v="${x}">${x}</button>`).join("")}</div>`);
+ $$(".opt").forEach(b=>b.onclick=()=>{if(S.locked)return;const g=b.dataset.v===q.f;b.classList.add(g?"ok":"bad");$$(".opt").forEach(x=>{if(x.dataset.v===q.f)x.classList.add("ok");x.disabled=true});answer(g,rule(q))})}
+
+function gap(q){let tries=0;
+ frame(q,"Type the correct form",`<p class="sent">${q.p} <span class="gap">___</span> (${q.b}) ${q.r}.</p><div class="row"><input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the verb…"><button class="btn" id="chk">Check</button></div><div id="hint" class="mut"></div>`);
+ const go=()=>{if(S.locked)return;const v=$("#in").value.trim().toLowerCase();if(!v)return;
+  if(v===q.f){$("#in").disabled=true;answer(true,rule(q),tries?.5:1)}
+  else if(!tries){tries=1;$("#hint").textContent="Try again! It starts with “"+q.f[0]+"” and has "+q.f.length+" letters.";$("#in").select()}
+  else{$("#in").disabled=true;answer(false,"The answer is <b>"+q.f+"</b>. "+rule(q))}};
+ $("#chk").onclick=go;$("#in").onkeydown=e=>e.key==="Enter"&&go();$("#in").focus()}
+
+function sort(q){
+ const s=S.sortType==="sp",B=s?["+s","+es","y → ies","irregular"]:["Daily","Weekly","Monthly"],c=s?sp(q):(q.k==="w"?1:q.k==="o"?2:0);
+ frame(q,s?"Sort by spelling rule":"Sort by routine",`<p class="sent">${s?`He/She/It form of <b class="big">${q.b}</b>?<br><span class="mut">${q.p} ___ ${q.r}.</span>`:sent(q,q.f)}</p><div class="opts ${B.length===3?"b3":""}">${B.map((x,i)=>`<button class="opt" data-i="${i}">${x}</button>`).join("")}</div>`);
+ $$(".opt").forEach(b=>b.onclick=()=>{if(S.locked)return;const g=+b.dataset.i===c;b.classList.add(g?"ok":"bad");$$(".opt").forEach(x=>{if(+x.dataset.i===c)x.classList.add("ok");x.disabled=true});answer(g,s?rule(q):"This is a <b>"+B[c].toLowerCase()+"</b> routine. "+rule(q))})}
+
+function ord(q){
+ const t=sent(q,q.f),w=t.split(" ").map((x,i)=>({x,i}));let bank,line=[];
+ do bank=shuf(w);while(bank.map(o=>o.x).join(" ")===t);
+ frame(q,"Put the words in order",`<div class="line" id="line"></div><div class="bank" id="bank"></div><div class="row"><button class="btn ghost" id="rst">Reset</button><button class="btn" id="chk">Check</button></div>`);
+ const draw=()=>{const mk=(a,c)=>a.map(o=>`<button class="chip" data-c="${c}" data-id="${o.i}" ${S.locked?"disabled":""}>${o.x}</button>`).join("");
+  $("#line").innerHTML=mk(line,"l")||'<span class="mut">Tap the words in order…</span>';$("#bank").innerHTML=mk(bank,"b");
+  $$(".chip").forEach(b=>b.onclick=()=>{const id=+b.dataset.id;if(b.dataset.c==="b"){const o=bank.find(x=>x.i===id);bank=bank.filter(x=>x!==o);line.push(o)}else{const o=line.find(x=>x.i===id);line=line.filter(x=>x!==o);bank.push(o)}draw()})};
+ draw();
+ $("#rst").onclick=()=>{if(S.locked)return;bank=shuf(w);line=[];draw()};
+ $("#chk").onclick=()=>{if(S.locked)return;if(line.length<w.length){$("#fb").innerHTML='<div class="msg">Use all the words first.</div>';return}
+  const g=line.map(o=>o.x).join(" ")===t;draw();answer(g,g?rule(q):"Correct order: <b>"+t+"</b> "+rule(q))}}
+
+function mis(q){
+ const m=Math.random()<.75,v=q.pl?q.t:q.b,w=sent(q,m?v:q.f).split(" "),vi=q.p.split(" ").length;
+ frame(q,"Find the mistake",`<p class="mut">Tap the wrong word — or say there’s no mistake.</p><div class="bank">${w.map((x,i)=>`<button class="chip" data-i="${i}">${x}</button>`).join("")}</div><button class="btn ghost" id="nm">✅ No mistake</button>`);
+ const fin=(g,i)=>{if(S.locked)return;$$(".chip").forEach(x=>{if(m&&+x.dataset.i===vi)x.classList.add("ok");x.disabled=true});if(i!=null&&!g)$$(".chip")[i].classList.add("bad");$("#nm").disabled=true;
+  answer(g,m?`The mistake is “${v}” → “${q.f}”. ${rule(q)}`:"This sentence is correct! "+rule(q))};
+ $$(".chip").forEach(b=>b.onclick=()=>fin(m&&+b.dataset.i===vi,+b.dataset.i));$("#nm").onclick=()=>fin(!m)}
+
+function summary(){
+ const n=S.q.length,st=S.ok>=9?3:S.ok>=7?2:S.ok>=5?1:0;if(S.ok===n)unlock("perfect");
+ $("#stage").innerHTML=`<div class="sum"><div class="stars">${"⭐".repeat(st)||"💪"}</div><h2>Round complete!</h2><p>${S.ok} / ${n} correct (${Math.round(S.ok/n*100)}%)</p><p class="mut">Best streak: ${S.best} · Total score: ${S.score}</p><button class="btn" id="again">Play again</button></div>`;
+ $("#again").onclick=start;stats()}
+
+function render(){S.locked=false;stats();if(S.i>=S.q.length){$("#pg").style.width="100%";return summary()}({mc,gap,sort,ord,mis})[S.mode](S.q[S.i])}
+function start(){
+ S.round++;S.sortType=S.round%2?"rt":"sp";S.i=0;S.ok=0;
+ let p=ITEMS.filter(q=>S.topic==="all"||q.k===S.topic);if(S.mode==="sort"&&S.sortType==="sp")p=p.filter(q=>!q.pl);
+ S.q=shuf(p).slice(0,10);render()}
+$("#modes").innerHTML=Object.entries(MODES).map(([k,v])=>`<button data-m="${k}" class="${k===S.mode?"on":""}">${v}</button>`).join("");
+$("#topics").innerHTML=Object.entries(TOP).map(([k,v])=>`<button data-t="${k}" class="${k===S.topic?"on":""}">${v}</button>`).join("");
+$$("#modes button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;$$("#modes button").forEach(x=>x.classList.toggle("on",x===b));start()});
+$$("#topics button").forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;$$("#topics button").forEach(x=>x.classList.toggle("on",x===b));start()});
+start();
+</script></body></html>
